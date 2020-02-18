@@ -1,3 +1,4 @@
+import java.time.Duration;
 import java.time.LocalTime;
 
 public class WeekDay {
@@ -33,6 +34,26 @@ public class WeekDay {
 
     private LocalTime parseLocalTime(final String time) {
         return LocalTime.parse(time.length() > 4 ? time : "0" + time);
+    }
+
+    public long timeOpen(){
+        return calculateTimeUntilClose(getOpeningHour());
+    }
+
+    public long calculateTimeUntilClose(final String time) {
+        return calculateTimeUntilClose(parseLocalTime(time));
+    }
+
+    public long calculateTimeUntilClose(final LocalTime time) {
+        final long result;
+        if (isOpen() && time.isBefore(closingHour)) {
+
+            final Duration duration = Duration.between(time.isAfter(openingHour)?time:openingHour, closingHour);
+            result = duration.getSeconds();
+        } else {
+            result = 0;
+        }
+        return result;
     }
 
     private void setOpeningHour(final String time) {
